@@ -1,6 +1,11 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+/bin/
+/obj/
+/git/
+/.idea/
+/analysislevel_6_default.editorconfig
 # Rider ignored files
 /contentModel.xml
 /.idea.GameProjectULearn.iml
