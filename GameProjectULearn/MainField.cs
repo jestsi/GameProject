@@ -9,16 +9,17 @@ public class MainField : Form
     public MainField()
     {
         ClientSize = new Size(300, 300);
-        DoubleBuffered = true;
+        DoubleBuffered = true; // двойная буфферизация для того что бы исчесзло мерцание 
         
         var floorStartX = (ClientSize.Width / 4) + 10;
         var floorStartY = ClientSize.Height - 20;
-        const int wallsWidth = 5;
+        
+        const int wallsWidth = 5; 
 
         floor = new (floorStartX, floorStartY, ClientSize.Width/2, ClientSize.Height, Color.Brown);
         leftWall = new BuildingStructs.Wall(0, 0, wallsWidth, ClientSize.Height, Color.Crimson);
         rightWall = new BuildingStructs.Wall(ClientSize.Width, 0, wallsWidth, ClientSize.Height, Color.Crimson);
-
+        // нижние три строки нужны что бы при изменении позции объекта обновлялся холст(поле)
         rightWall.PositionChange += (x, y, newX, newY) => Invalidate();
         leftWall.PositionChange += (x, y, newX, newY) => Invalidate();
         floor.PositionChange += (x, y, newX, newY) => Invalidate();
@@ -35,7 +36,6 @@ public class MainField : Form
             leftWall.Move(0, 0,  true, ClientSize);
             
             Invalidate();
-
         };
         
         Paint += (sender, args) =>

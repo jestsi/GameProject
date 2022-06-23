@@ -4,11 +4,13 @@ namespace GameProjectULearn;
 
 public enum TypeObject
 {
-    Player,
+    Player, 
     Building,
     Danger
 }
-
+/// <summary>
+/// Интерфейс представляющий объекты
+/// </summary>
 public interface IGameObjects
 {
     public int X { get; set; }
@@ -19,13 +21,32 @@ public interface IGameObjects
     public Color _Color { get; set; }
 
     public TypeObject Type { get; }
-
+    /// <summary>
+    /// Метод перемещает объект в двумерном пространстве
+    /// </summary>
+    /// <param name="x">Новая кордината объекта по x</param>
+    /// <param name="y">Новая кордината объекта по y</param>
+    /// <param name="limiter">Проверять ли на выход из границ "ClientSize"</param>
+    /// <param name="clientSize">Нужно для проверки на выход из границ</param>
     public void Move(int x, int y, bool limiter = true, Size? clientSize = null);
+    /// <summary>
+    /// Метод изменяет размеры объекта
+    /// </summary>
+    /// <param name="width">Новая ширина объекта</param>
+    /// <param name="height">Новая высота объекта</param>
     public void Resize(int width, int height);
     
-    
+    /// <summary>
+    /// Событие при котором изменяеться позиция объекта
+    /// </summary>
     public event Action<int, int, int, int> PositionChange;
+    /// <summary>
+    /// Событие при котором изменяеться цвет объекта
+    /// </summary>
     public event Action<Color, Color> ColorChanged;
+    /// <summary>
+    /// Событие при котором изменяеться размер объекта
+    /// </summary>
     public event Action<int, int> SizeChanged;
 }
 
@@ -37,8 +58,8 @@ public class BuildingStructs
         private int _y;
         private int _width;
         private int _height;
-        private Color _color;
-        private bool _isFake;
+        private Color _color; 
+        // private bool _isFake; 
         private const TypeObject _Type = TypeObject.Building;
 
         public Wall(int x, int y, int width, int height, Color color)
@@ -55,7 +76,7 @@ public class BuildingStructs
             this._color = color;
             this._width = width;
             this._height = height;
-            _isFake = false;
+            //_isFake = false;
             
             PositionChange = delegate(int x, int y, int newX, int newY) {};
             ColorChanged = delegate(Color last, Color newColor) {}; 
