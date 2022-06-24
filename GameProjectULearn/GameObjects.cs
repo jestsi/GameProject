@@ -64,7 +64,7 @@ public class BuildingStructs
 
         public Wall(int x, int y, int width, int height, Color color)
         {
-            if (width <= 0 || height <= 0 || x < 0 || y < 0) 
+            if (width < 0 || height < 0 || x < 0 || y < 0) 
                 throw new ArgumentException($"the argument under the name " +
                                             $"{nameof(width)}," +
                                             $"{nameof(height)}," +
@@ -85,25 +85,17 @@ public class BuildingStructs
 
         public void Move(int x, int y, bool limiter = true, Size? clientSize = null)
         {
-            if (x < 0 || y < 0 || (limiter && clientSize == null)) 
+            if (x < 0 || y < 0 ) 
                 throw new ArgumentException($"the argument under the name {nameof(x)} or {nameof(y)} is invalid");
-
-            if (limiter &&
-                (x+_width) <= clientSize.Value.Width && 
-                x >= 0 && 
-                y >= 0)
-            {
-                PositionChange?.Invoke(_x, _y, x, y);
-                _x = x;
-                _y = y;
-                return;
-            }
-            if (limiter) return;
             
             PositionChange?.Invoke(_x, _y, x, y);
             _x = x;
             _y = y;
-            
+        }
+
+        public async void MoveAsync(int x, int y)
+        {
+            await Task.Run(() => Move(x, y));
         }
 
         public void Resize(int width, int height)
@@ -113,6 +105,11 @@ public class BuildingStructs
             SizeChanged?.Invoke(width, height);
             _width = width;
             _height = height;
+        }
+
+        public async void ResizeAsync(int width, int height)
+        {
+            await Task.Run(() => Resize(width, height));
         }
         
         public event Action<int, int, int, int> PositionChange;
@@ -160,7 +157,7 @@ public class BuildingStructs
         }
     }
 
-    public class Floor : IGameObjects
+    public class Platform : IGameObjects
     {
         private int _x;
         private int _y;
@@ -169,9 +166,9 @@ public class BuildingStructs
         private Color _color;
         private const TypeObject _Type = TypeObject.Building;
 
-        public Floor(int x, int y, int width, int height, Color color)
+        public Platform(int x, int y, int width, int height, Color color)
         {
-            if (width <= 0 || height <= 0 || x < 0 || y < 0) 
+            if (width < 0 || height < 0 || x < 0 || y < 0) 
                 throw new ArgumentException($"the argument under the name " +
                                             $"{nameof(width)}," +
                                             $"{nameof(height)}," +
@@ -193,23 +190,27 @@ public class BuildingStructs
             if (x < 0 || y < 0 || (limiter && clientSize == null)) 
                 throw new ArgumentException($"the argument under the name {nameof(x)} or {nameof(y)} is invalid");
 
-            if (limiter &&
-                (x+_width) <= clientSize.Value.Width && 
-                x >= 0 && 
-                y >= 0)
+            if (limiter && (x+_width) <= clientSize.Value.Width && 
+                x >= 0 && y >= 0)
             {
                 PositionChange?.Invoke(_x, _y, x, y);
                 _x = x;
                 _y = y;
                 return;
             }
+
             if (limiter) return;
             
             PositionChange?.Invoke(_x, _y, x, y);
             _x = x;
             _y = y;
         }
-
+        
+        public async void MoveAsync(int x, int y, bool limiter = true, Size? clientSize = null)
+        {
+            await Task.Run(() => Move(x, y, limiter, clientSize));
+        }
+        
         public void Resize(int width, int height)
         {
             if (width <= 0 || height <= 0) 
@@ -217,6 +218,11 @@ public class BuildingStructs
             SizeChanged?.Invoke(width, height);
             _width = width;
             _height = height;
+        }
+        
+        public async void ResizeAsync(int width, int height)
+        {
+            await Task.Run(() => Resize(width, height));
         }
         
         public event Action<int, int, int, int> PositionChange;
