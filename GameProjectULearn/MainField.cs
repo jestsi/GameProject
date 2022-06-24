@@ -11,7 +11,7 @@ public class MainField : Form
     {
         ClientSize = new Size(300, 300);
         DoubleBuffered = true; // двойная буфферизация для того что бы исчесзло мерцание 
-
+        
         const int wallsWidth = 5; 
 
         _platform = new ((ClientSize.Width / 4) + 10, ClientSize.Height - 20, ClientSize.Width/2, ClientSize.Height, Color.Brown);
