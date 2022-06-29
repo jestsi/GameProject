@@ -8,9 +8,7 @@ public enum TypeObject
     Building,
     Danger
 }
-/// <summary>
-/// Абстракция представляющая объекты
-/// </summary>
+
 public abstract class GameObjects
 {
     public virtual int X { get; protected set; }
@@ -52,11 +50,6 @@ public abstract class GameObjects
         SizeChanged = delegate(int width, int height) { };
     }
     
-    /// <summary>
-    /// Метод перемещает объект в двумерном пространстве
-    /// </summary>
-    /// <param name="x">Новая кордината объекта по x</param>
-    /// <param name="y">Новая кордината объекта по y</param>
     public virtual void Move(int x, int y)
     {
         if (x < 0 || y < 0 ) 
@@ -70,12 +63,6 @@ public abstract class GameObjects
     public virtual async void MoveAsync(int x, int y) => await Task.Run(() => Move(x, y));
     public virtual async void ResizeAsync(int x, int y) => await Task.Run(() => Resize(x, y));
     
-
-    /// <summary>
-    /// Метод изменяет размеры объекта
-    /// </summary>
-    /// <param name="width">Новая ширина объекта</param>
-    /// <param name="height">Новая высота объекта</param>
     public virtual void Resize(int width, int height)
     {
         if (width <= 0 || height <= 0) 
@@ -85,18 +72,9 @@ public abstract class GameObjects
         Width = width;
         Height = height;
     }
-    
-    /// <summary>
-    /// Событие при котором изменяеться позиция объекта
-    /// </summary>
+
     public virtual event Action<int, int, int, int> PositionChange;
-    /// <summary>
-    /// Событие при котором изменяеться цвет объекта
-    /// </summary>
     public virtual event Action<Color, Color> ColorChanged;
-    /// <summary>
-    /// Событие при котором изменяеться размер объекта
-    /// </summary>
     public virtual event Action<int, int> SizeChanged;
 }
 
@@ -106,15 +84,21 @@ public class BuildingStructs
     {
         private Color _color;
         private const TypeObject _Type = TypeObject.Building;
+        private static readonly int defaultWidth = 5;
+
+
+        public static int DefaultWidth => defaultWidth;
         public override event Action<int, int, int, int> PositionChange;
         public override event Action<Color, Color> ColorChanged;
         public override event Action<int, int> SizeChanged;
 
+
         public Wall(int x, int y, int width, int height, Color color) 
             : base(x, y, width, height, color)
-        { }
+        {
+            
+        }
         
-        [DefaultValue(typeof(Color), "Color.Black")]
         public override Color Color
         {
             get => _color;
@@ -139,10 +123,11 @@ public class BuildingStructs
         
         public void Move(int x, int y, bool limiter = true, Size? clientSize = null)
         {
-            if (x < 0 || y < 0 || (limiter && clientSize == null)) 
-                throw new ArgumentException($"the argument under the name {nameof(x)} or {nameof(y)} is invalid");
+            if (CheckOnNullArgumentsInMove(x, y, limiter, clientSize)) 
+                throw new ArgumentException();
 
-            if (limiter && (x+Width) <= clientSize.Value.Width && 
+            if (limiter && 
+                (x+Width) <= clientSize.Value.Width && 
                 x >= 0 && y >= 0)
             {
                 PositionChange?.Invoke(X, Y, x, y);
@@ -158,6 +143,15 @@ public class BuildingStructs
             Y = y;
         }
         
+        
+
+        private static bool CheckOnNullArgumentsInMove(int x, int y, bool limiter, Size? clientSize)
+        {
+            return x < 0 || y < 0 ||
+                ((limiter && clientSize == null) ||
+                (!limiter && clientSize != null));
+        }
+
         public async void MoveAsync(int x, int y, bool limiter = true, Size? clientSize = null)
         {
             await Task.Run(() => Move(x, y, limiter, clientSize));
@@ -184,7 +178,7 @@ public class BuildingStructs
         {
             if (args.KeyCode is not (Keys.A or Keys.Left or Keys.D or Keys.Right))
                 return;
-            await Task.Run(async () => MovePlatform(args, this, clientSize));
+            await Task.Run(() => MovePlatform(args, this, clientSize));
         }
         
         public override event Action<int, int, int, int>? PositionChange;

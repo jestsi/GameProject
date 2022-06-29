@@ -13,3 +13,5 @@ C:\Projects\CSharp\Learn\GameProjectULearn\GameProjectULearn\obj\Debug\net6.0-wi
 C:\Projects\CSharp\Learn\GameProjectULearn\GameProjectULearn\obj\Debug\net6.0-windows\GameProjectULearn.pdb
 C:\Projects\CSharp\Learn\GameProjectULearn\GameProjectULearn\obj\Debug\net6.0-windows\GameProjectULearn.genruntimeconfig.cache
 C:\Projects\CSharp\Learn\GameProjectULearn\GameProjectULearn\obj\Debug\net6.0-windows\ref\GameProjectULearn.dll
+C:\Projects\CSharp\Learn\GameProjectULearn\GameProjectULearn\obj\Debug\net6.0-windows\GameProjectULearn.MainField.resources
+C:\Projects\CSharp\Learn\GameProjectULearn\GameProjectULearn\obj\Debug\net6.0-windows\GameProjectULearn.csproj.GenerateResource.cache
